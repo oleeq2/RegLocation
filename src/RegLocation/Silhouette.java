@@ -8,7 +8,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class Silhouette extends JComponent {
+public class Silhouette extends JComponent
+{
     float R;
     int MarkDefaultR;
     final static int delay = 150;    // Delay in mS
@@ -19,7 +20,10 @@ public class Silhouette extends JComponent {
 
     ArrayList<Mark> Marks;
 
-    public Silhouette(float R) {
+    ArrayList<MarkSetListener> MarkListeners;
+
+    public Silhouette(float R)
+    {
 
         this.R = R;
 
@@ -32,9 +36,13 @@ public class Silhouette extends JComponent {
 
         add(MarksLayer);
 
-        addMouseListener(new MouseAdapter() {
+        MarkListeners = new ArrayList<MarkSetListener>();
+
+        addMouseListener(new MouseAdapter()
+        {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(MouseEvent e)
+            {
                 float x, y;
                 int width = getWidth();
                 int height = getHeight();
@@ -50,18 +58,22 @@ public class Silhouette extends JComponent {
                 if (controller.InRegion(x, y))
                     TOF = true;
 
-                Marks.add(new Mark(x_origin, y_origin, TOF));
+                Mark mark =  new Mark(x_origin, y_origin, TOF);
+                Marks.add(mark);
                 marksRepaint(getGraphics());
+                MarkSetPerformed(mark);
             }
         });
 
 
-        Thread anim = new Thread(new Runnable() {
+        Thread AnimationThread = new Thread(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 try
                 {
-                    while(true)
+                    while (true)
                     {
                         marksRepaint(getGraphics());
                         Thread.sleep(delay);
@@ -69,18 +81,38 @@ public class Silhouette extends JComponent {
                 }
                 catch (InterruptedException ex)
                 {
-                     Thread.currentThread().interrupt();
+                    Thread.currentThread().interrupt();
                 }
             }
         });
-        anim.start();
+        AnimationThread.start();
     }
 
-    public float getR() {
+    public void addMarkInR(float x, float y)
+    {
+        boolean TTL = false;
+        if(controller.InRegion(x,y))
+            TTL = true;
+
+        int x_px,y_px;
+
+        x_px =   (int)( x*(getWidth()*getR())/4 + getWidth()/2 );
+        y_px =   (int)( getHeight()/2 - y*(getWidth()*getR())/4);
+
+        Mark mark = new Mark(x_px,y_px,TTL);
+        Marks.add(mark);
+        MarkSetPerformed(mark);
+        marksRepaint(getGraphics());
+    }
+
+
+    public float getR()
+    {
         return R;
     }
 
-    public void setR(float R) {
+    public void setR(float R)
+    {
 
         this.R = R;
         view.setR(R);
@@ -89,49 +121,55 @@ public class Silhouette extends JComponent {
         update(getGraphics());
     }
 
-    public void markAddInR(float x, float y)
+    public void addMarkSetListener(MarkSetListener listener)
     {
-        int x_px = (int)(x*(getWidth()*getR())/4 + getWidth()/2);
-        int y_px = (int)(y*(getHeight()*getR())/4 - getHeight()/2);
+        MarkListeners.add(listener);
+    }
 
-        boolean TTL = false;
-        if(controller.InRegion(x,y))
-        {
-            TTL = true;
-        }
-        Marks.add(new Mark(x_px,y_px,TTL));
+    void MarkSetPerformed(Mark x)
+    {
+        for(MarkSetListener listener : MarkListeners)
+            listener.Setted(x);
     }
 
     @Override
-    public void update(Graphics g) {
+    public void update(Graphics g)
+    {
         view.paint(g, getSize());
         marksRepaint(g);
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g)
+    {
         super.paintComponent(g);
         view.paint(g, getSize());
         marksRepaint(g);
     }
 
-    void marksRepaint(Graphics g) {
+
+    void marksRepaint(Graphics g)
+    {
         MarksLayer.update(g);
     }
 
-    class MarksCanvas extends Canvas {
+    class MarksCanvas extends Canvas
+    {
 
         @Override
-        public void update(Graphics g) {
+        public void update(Graphics g)
+        {
             paint(g);
         }
 
         @Override
-        public void paint(Graphics g) {
+        public void paint(Graphics g)
+        {
 
             int index;
 
-            for (index = 0; index < Marks.size(); index++) {
+            for (index = 0; index < Marks.size(); index++)
+            {
                 Mark i = Marks.get(index);
                 markPaint(g, i);
                 i.incTTL();
@@ -139,17 +177,20 @@ public class Silhouette extends JComponent {
 
         }
 
-        void markPaint(Graphics g, Mark mark) {
+        void markPaint(Graphics g, Mark mark)
+        {
             int x, y;
             int pxMarkR = (int) (mark.getTTL() * MarkDefaultR);
 
-            x = (int) mark.getX();
-            y = (int) mark.getY();
+            x = (int)mark.getX();
+            y = (int)mark.getY();
+
+
 
             g.setColor(Color.RED);
             g.fillArc(x - pxMarkR / 2, y - pxMarkR / 2, pxMarkR, pxMarkR, 0, 360);
-            g.drawString("(" + x + "; " + y + ")", x+MarkDefaultR, y + MarkDefaultR);
-            System.out.println("\nmarkPaint:\n" + "X: " + x + "\nY: " + y + "\nRadius: " + pxMarkR);
+            g.drawString("(" + x + "; " + y + ")", x + MarkDefaultR, y + MarkDefaultR);
+           // System.out.println("\nmarkPaint:\n" + "X: " + x + "\nY: " + y + "\nRadius: " + pxMarkR);
         }
     }
 }

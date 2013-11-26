@@ -11,13 +11,25 @@ import java.util.ArrayList;
 public class ContentPanel extends JPanel
 {
     float R;
+    float x, y;
+
     Silhouette silhouette;
-    float x,y;
+
     public ContentPanel()
     {
         R = 1f;
         silhouette = new Silhouette(R);
-        setLayout(new GridLayout(1,2));
+
+        final JLabel label = new JLabel("Nothing pressed");
+        silhouette.addMarkSetListener(new MarkSetListener()
+        {
+            @Override
+            public void Setted(Mark x)
+            {
+                label.setText(x.toString());
+            }
+        });
+        setLayout(new GridLayout(1, 2));
 
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new FlowLayout());
@@ -25,19 +37,25 @@ public class ContentPanel extends JPanel
         add(controlPanel);
         controlPanel.add(initSlider());
         add(silhouette);
+
         controlPanel.add(getCBPanel());
+
         controlPanel.add(getComboPanel());
+
+        controlPanel.add(label);
     }
 
     JSlider initSlider()
     {
-        JSlider slider = new JSlider(0,10,1);
+        JSlider slider = new JSlider(0, 10, 1);
 
-        slider.addChangeListener(new ChangeListener() {
+        slider.addChangeListener(new ChangeListener()
+        {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider)e.getSource();
-                if(source.getValueIsAdjusting())
+            public void stateChanged(ChangeEvent e)
+            {
+                JSlider source = (JSlider) e.getSource();
+                if (source.getValueIsAdjusting())
                 {
                     int value = source.getValue();
                     R = value;
@@ -51,47 +69,49 @@ public class ContentPanel extends JPanel
 
     JPanel getCBPanel()
     {
+
         JPanel CB = new JPanel();
+        CB.add(new JLabel("Y"));
         final ArrayList<JCheckBox> CBs = new ArrayList<JCheckBox>();
-        ChangeListener Listener = new ChangeListener() {
+        ChangeListener Listener = new ChangeListener()
+        {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                y = CBs.indexOf((JCheckBox)e.getSource()) + 1;
+            public void stateChanged(ChangeEvent e)
+            {
+                y = CBs.indexOf((JCheckBox) e.getSource()) + 1 ;
             }
         };
         int i;
-        for(i = 1; i < 6; i++)
+        for (i = 1; i < 6; i++)
         {
-            JCheckBox item = new JCheckBox(new Integer(i).toString());
-            CBs.add(i-1,item);
-            item.addChangeListener(Listener);
-            CB.add(item);
+            JCheckBox Item = new JCheckBox(String.valueOf(i));
+            CBs.add(i - 1, Item);
+            Item.addChangeListener(Listener);
+            CB.add(Item);
         }
 
         return CB;
     }
 
-    JComboBox getComboPanel()
+    JPanel getComboPanel()
     {
-        String[] strs = {"1", "2", "3", "4", "5"};
-        JComboBox ret = new JComboBox(strs);
-        ret.addActionListener(new ActionListener() {
+        JPanel ret = new JPanel();
+        String[] Descs = {"1", "2", "3", "4", "5"};
+        JComboBox CBox = new JComboBox(Descs);
+        CBox.addActionListener(new ActionListener()
+        {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                JComboBox source = (JComboBox)e.getSource();
+            public void actionPerformed(ActionEvent e)
+            {
+                JComboBox source = (JComboBox) e.getSource();
                 x = source.getSelectedIndex() + 1;
-                silhouette.markAddInR(x,y);
+                silhouette.addMarkInR(x, y);
             }
         });
-        return ret;
-    }
 
-    public static void main(String[] args)
-    {
-        JWindow window = new JWindow();
-        window.add(new ContentPanel()) ;
-        window.setBounds(0,0,500,500);
-        window.setVisible(true);
+        ret.add(new JLabel("X"));
+        ret.add(CBox);
+        return ret;
     }
 
 }
