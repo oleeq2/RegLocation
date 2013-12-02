@@ -13,20 +13,21 @@ public class ContentPanel extends JPanel
     float R;
     float x, y;
 
-    Silhouette silhouette;
+    SilhouetteComponent silhouette;
 
     public ContentPanel()
     {
         R = 1f;
-        silhouette = new Silhouette(R);
+        silhouette = new SilhouetteComponent(R);
 
         final JLabel label = new JLabel("Nothing pressed");
-        silhouette.addMarkSetListener(new MarkSetListener()
+        silhouette.addMarksListener(new MarksListener()
         {
+
             @Override
-            public void Setted(Mark x)
+            public void actionPerformed(Mark mk)
             {
-                label.setText(x.toString());
+                label.setText(mk.toString());
             }
         });
         setLayout(new GridLayout(1, 2));
@@ -78,7 +79,7 @@ public class ContentPanel extends JPanel
             @Override
             public void stateChanged(ChangeEvent e)
             {
-                y = CBs.indexOf((JCheckBox) e.getSource()) + 1 ;
+                y = CBs.indexOf((JCheckBox) e.getSource()) - 3;
             }
         };
         int i;
@@ -105,7 +106,7 @@ public class ContentPanel extends JPanel
             {
                 JComboBox source = (JComboBox) e.getSource();
                 x = source.getSelectedIndex() + 1;
-                silhouette.addMarkInR(x, y);
+                silhouette.markAdd(x, y);
             }
         });
 
