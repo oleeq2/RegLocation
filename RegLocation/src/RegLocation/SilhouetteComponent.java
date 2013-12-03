@@ -97,10 +97,14 @@ public class SilhouetteComponent extends JComponent
     public void markAdd(float x,float y)
     {
         TOL type = TOL.FOREVER;
+        Color color = Color.GREEN;
 
         if(silhouette.InRegion(x,y) != 0)
+        {
             type = TOL.EXPAND;
-        Mark newMark = new Mark(x,y,type);
+            color = Color.RED;
+        }
+        Mark newMark = new Mark(x,y,type,color);
         MAL.add(newMark);
         MarksActionPerformed(newMark);
     }

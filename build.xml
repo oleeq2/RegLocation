@@ -1,5 +1,5 @@
 <project name="RegLocation" default="build">
     <target name="build" >
-        <javac srcdir="./src" destdir="./build" />
+        <javac srcdir="./RegLocation/src" destdir="./build" />
     </target>
 </project>

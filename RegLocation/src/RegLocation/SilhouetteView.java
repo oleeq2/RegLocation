@@ -71,7 +71,7 @@ public class SilhouetteView
             item_y =  mySizeConverter.getCenterY() - mySizeConverter.toPx(item.getCoord()[1]);
             int radius = (int)(MarkMaxR*factor);
 
-            g.setColor(Color.RED);
+            g.setColor(item.getColor());
             g.fillOval(item_x - radius/2,item_y - radius/2, radius,radius);
         }
     }

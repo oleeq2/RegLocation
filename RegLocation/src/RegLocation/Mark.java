@@ -1,4 +1,5 @@
 package RegLocation;
+import java.awt.Color;
 
 public class Mark implements Comparable<Mark>       //MarkView include
 {
@@ -7,8 +8,9 @@ public class Mark implements Comparable<Mark>       //MarkView include
     float y;
     float factor;
     TOL type;
+    Color markColor;
 
-    public Mark(float x,float y,TOL type)
+    public Mark(float x,float y,TOL type,Color markColor)
     {
         this(x,y);
         this.type = type;
@@ -18,6 +20,8 @@ public class Mark implements Comparable<Mark>       //MarkView include
         else
             factor = 1f;
 
+        this.markColor = markColor;
+
     }
 
     public Mark(float x, float y)
@@ -26,6 +30,8 @@ public class Mark implements Comparable<Mark>       //MarkView include
         this.y = y;
         type = TOL.FOREVER;
     }
+
+    public Color getColor() { return markColor;  }
 
     public float getFactor()
     {
