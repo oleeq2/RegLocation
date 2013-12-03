@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.Checkbox;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -74,14 +75,15 @@ public class ContentPanel extends JPanel
     {
 
         JPanel CB = new JPanel();
+        CheckboxGroup CBG = new CheckboxGroup();
         CB.add(new JLabel("Y"));
-        final ArrayList<JCheckBox> CBs = new ArrayList<JCheckBox>();
+        final ArrayList<Checkbox> CBs = new ArrayList<Checkbox>();
         ItemListener itemListener = new ItemListener()
         {
             @Override
             public void itemStateChanged(ItemEvent e)
             {
-                JCheckBox box = (JCheckBox) e.getItemSelectable();
+                Checkbox box = (Checkbox) e.getItemSelectable();
                 y = CBs.indexOf(box);
                 y /= 4;
             }
@@ -90,7 +92,7 @@ public class ContentPanel extends JPanel
         int i;
         for (i = 0; i < 5; i++)
         {
-            JCheckBox Item = new JCheckBox(String.valueOf(i*0.25));
+            Checkbox Item = new Checkbox(String.valueOf(i*0.25),CBG,false);
             CBs.add(i, Item);
             Item.addItemListener(itemListener);
             CB.add(Item);
