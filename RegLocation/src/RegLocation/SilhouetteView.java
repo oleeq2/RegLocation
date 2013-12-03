@@ -18,6 +18,9 @@ public class SilhouetteView
 
     public void paint(Graphics g)
     {
+
+        g.setColor(Color.WHITE);
+        g.fillRect(0,0,(int)mySizeConverter.getWidth(),(int)mySizeConverter.getHeight());
         paintSilhouette(g);
         paintAxes(g);
         paintPoints(g);

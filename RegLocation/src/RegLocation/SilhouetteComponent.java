@@ -112,4 +112,12 @@ public class SilhouetteComponent extends JComponent
         silhouetteView.paint(g);
     }
 
+    @Override
+    public void update(Graphics g)
+    {
+        super.update(g);
+        paintComponent(g);
+    }
+
+
 }
