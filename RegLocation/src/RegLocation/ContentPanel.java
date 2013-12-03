@@ -6,6 +6,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 public class ContentPanel extends JPanel
@@ -74,20 +76,23 @@ public class ContentPanel extends JPanel
         JPanel CB = new JPanel();
         CB.add(new JLabel("Y"));
         final ArrayList<JCheckBox> CBs = new ArrayList<JCheckBox>();
-        ChangeListener Listener = new ChangeListener()
+        ItemListener itemListener = new ItemListener()
         {
             @Override
-            public void stateChanged(ChangeEvent e)
+            public void itemStateChanged(ItemEvent e)
             {
-                y = CBs.indexOf((JCheckBox) e.getSource()) - 3;
+                JCheckBox box = (JCheckBox) e.getItemSelectable();
+                y = CBs.indexOf(box);
+                y /= 4;
             }
         };
+
         int i;
-        for (i = 1; i < 6; i++)
+        for (i = 0; i < 5; i++)
         {
-            JCheckBox Item = new JCheckBox(String.valueOf(i));
-            CBs.add(i - 1, Item);
-            Item.addChangeListener(Listener);
+            JCheckBox Item = new JCheckBox(String.valueOf(i*0.25));
+            CBs.add(i, Item);
+            Item.addItemListener(itemListener);
             CB.add(Item);
         }
 
@@ -97,7 +102,7 @@ public class ContentPanel extends JPanel
     JPanel getComboPanel()
     {
         JPanel ret = new JPanel();
-        String[] Descs = {"1", "2", "3", "4", "5"};
+        String[] Descs = {"0", "0.25", "0.5", "0.75", "1"};
         JComboBox CBox = new JComboBox(Descs);
         CBox.addActionListener(new ActionListener()
         {
@@ -105,7 +110,8 @@ public class ContentPanel extends JPanel
             public void actionPerformed(ActionEvent e)
             {
                 JComboBox source = (JComboBox) e.getSource();
-                x = source.getSelectedIndex() + 1;
+                x = source.getSelectedIndex();
+                x /= 4;
                 silhouette.markAdd(x, y);
             }
         });
